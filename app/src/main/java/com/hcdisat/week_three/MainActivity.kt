@@ -10,10 +10,12 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import com.hcdisat.week_three.data.database.AppRepository
 import com.hcdisat.week_three.data.database.MusicTrackDatabase
 import com.hcdisat.week_three.databinding.ActivityMainBinding
 import com.hcdisat.week_three.models.MusicTrack
+import com.hcdisat.week_three.monitors.NetworkMonitor
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
@@ -27,6 +29,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     private val compositeDisposable = CompositeDisposable()
+
+    private val networkMonitor by lazy {
+        NetworkMonitor(applicationContext)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,6 +77,18 @@ class MainActivity : AppCompatActivity() {
 //            }, {}).apply {
 //                compositeDisposable.add(this)
 //            }
+
+//        networkMonitor.registerForNetworkUpdates().subscribe(
+//            {
+//                when(it) {
+//                    true -> Log.d("TAG", "Connected: ")
+//                    false -> Log.d("TAG", "Disconnected: ")
+//                }
+//            },
+//            {})?.let {
+//            compositeDisposable.add(it)
+//        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
