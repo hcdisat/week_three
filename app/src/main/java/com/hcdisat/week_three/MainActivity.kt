@@ -1,6 +1,7 @@
 package com.hcdisat.week_three
 
 import android.os.Bundle
+import android.util.Log
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
@@ -9,12 +10,23 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import com.hcdisat.week_three.data.database.AppRepository
+import com.hcdisat.week_three.data.database.MusicTrackDatabase
 import com.hcdisat.week_three.databinding.ActivityMainBinding
+import com.hcdisat.week_three.models.MusicTrack
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.runBlocking
+import kotlin.math.log
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
+
+    private val compositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +39,38 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
+    }
+
+    override fun onStart() {
+        super.onStart()
+//        val track = MusicTrack(
+//            trackId = 2,
+//            artistName = "Korn",
+//            collectionName = "Issues",
+//            artworkUrl = "http://",
+//            trackNumber = 3
+//        )
+//
+//        val db = MusicTrackDatabase.getInstance(applicationContext)
+//
+//        db.musicTracksDAO().insertMany(listOf(track))
+//            .subscribeOn(Schedulers.io())
+//            .subscribe({
+//                Log.d("TAG", "onStart: Now test reading")
+//            }, {
+//                Log.e("TAG", "onStart: ${it.stackTrace}", )
+//            }).let {
+//                compositeDisposable.add(it)
+//            }
+
+//        val db = MusicTrackDatabase.getInstance(applicationContext)
+//        db.musicTracksDAO().getAll()
+//            .subscribeOn(Schedulers.io())
+//            .subscribe({
+//                Log.d("TAG", it.toString())
+//            }, {}).apply {
+//                compositeDisposable.add(this)
+//            }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -5,8 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
-import com.hcdisat.week_three.R
 import com.hcdisat.week_three.data.network.GenreTracksService
 import com.hcdisat.week_three.databinding.FragmentHomeBinding
 import com.hcdisat.week_three.models.GenreSummary
