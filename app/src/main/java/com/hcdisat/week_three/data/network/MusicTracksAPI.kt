@@ -1,19 +1,20 @@
 package com.hcdisat.week_three.data.network
 
 import com.hcdisat.week_three.models.GenreSummary
+import io.reactivex.Single
 import retrofit2.Call
 import retrofit2.http.GET
 
 interface MusicTracksAPI {
 
     @GET(ROCK_URL)
-    fun getRockTracks(): Call<GenreSummary>
+    fun getRockTracks(): Single<GenreSummary>
 
     @GET(POP_URL)
-    fun getPopTracks(): Call<GenreSummary>
+    fun getPopTracks(): Single<GenreSummary>
 
     @GET(CLASSIC_URL)
-    fun getClassicTracks(): Call<GenreSummary>
+    fun getClassicTracks(): Single<GenreSummary>
 
     companion object {
         const val BASE_URL = "https://itunes.apple.com/search/"

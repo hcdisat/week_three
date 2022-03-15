@@ -3,11 +3,47 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/HomeFragment">
+    app:startDestination="@id/rockFragment">
 
     <fragment
-        android:id="@+id/HomeFragment"
-        android:name="com.hcdisat.week_three.views.HomeFragment"
+        android:id="@+id/rockFragment"
+        android:name="com.hcdisat.week_three.views.RockFragment"
         android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_rock" >
+        <action
+            android:id="@+id/action_RockFragment_to_popFragment"
+            app:destination="@id/popFragment" />
+        <action
+            android:id="@+id/action_RockFragment_to_classicFragment"
+            app:destination="@id/classicFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/classicFragment"
+        android:name="com.hcdisat.week_three.views.ClassicFragment"
+        android:label="fragment_classic"
+        tools:layout="@layout/fragment_classic" >
+        <action
+            android:id="@+id/action_classicFragment_to_RockFragment"
+            app:destination="@id/rockFragment" />
+        <action
+            android:id="@+id/action_classicFragment_to_popFragment"
+            app:destination="@id/popFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/popFragment"
+        android:name="com.hcdisat.week_three.views.PopFragment"
+        android:label="fragment_pop"
+        tools:layout="@layout/fragment_pop" >
+        <action
+            android:id="@+id/action_popFragment_to_RockFragment"
+            app:destination="@id/rockFragment" />
+        <action
+            android:id="@+id/action_popFragment_to_classicFragment"
+            app:destination="@id/classicFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/playerFragment"
+        android:name="com.hcdisat.week_three.views.PlayerFragment"
+        android:label="fragment_player"
+        tools:layout="@layout/fragment_player" />
 </navigation>
