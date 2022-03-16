@@ -12,12 +12,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.hcdisat.week_three.MusicTracksAdapter
 import com.hcdisat.week_three.R
 import com.hcdisat.week_three.databinding.FragmentRockBinding
-import com.hcdisat.week_three.models.GenreSummary
+import com.hcdisat.week_three.models.MusicTrack
 import com.hcdisat.week_three.presenters.MusicTrackPresenterContract
 import com.hcdisat.week_three.presenters.MusicTrackViewContract
 import com.hcdisat.week_three.presenters.MusicTracksPresenter
 import com.hcdisat.week_three.utils.Genre
-import com.hcdisat.week_three.utils.LOG_TAG
 
 open class BaseFragment: Fragment(), MusicTrackViewContract {
 
@@ -34,7 +33,7 @@ open class BaseFragment: Fragment(), MusicTrackViewContract {
         MusicTracksPresenter(
             requireContext(),
             this
-        )
+        ) as MusicTrackPresenterContract
     }
 
     /**
@@ -74,9 +73,12 @@ open class BaseFragment: Fragment(), MusicTrackViewContract {
         // sets the binding
         _binding = FragmentRockBinding.inflate(inflater, container, false)
 
+        // start to monitor the network
+        presenter.runNetworkMonitor()
+
         // swipeRefresh implementation
         binding.refreshTracks.setOnRefreshListener {
-            presenter.getTracks(endpoint)
+            presenter.loadTracks(endpoint)
         }
 
         //init the recycler view
@@ -91,7 +93,7 @@ open class BaseFragment: Fragment(), MusicTrackViewContract {
     override fun onResume() {
         super.onResume()
 
-        presenter.getTracks(endpoint)
+        presenter.loadTracks(endpoint)
     }
 
     /**
@@ -107,7 +109,7 @@ open class BaseFragment: Fragment(), MusicTrackViewContract {
 
     }
 
-    override fun success(tracks: GenreSummary): MusicTrackViewContract {
+    override fun success(tracks: List<MusicTrack>): MusicTrackViewContract {
         tracksAdapter.setTracks(tracks)
         binding.refreshTracks.isRefreshing = false
         return this

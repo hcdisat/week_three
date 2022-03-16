@@ -5,7 +5,9 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.hcdisat.week_three.utils.Genre
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -34,4 +36,7 @@ data class MusicTrack(
 
     @SerializedName("artworkUrl60")
     @ColumnInfo(name = "artwork_url") val artworkUrl: String,
+
+    @Expose(serialize = false, deserialize = false)
+    @ColumnInfo(name = "genre") var genre: Genre,
 ): Parcelable

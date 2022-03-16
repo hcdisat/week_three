@@ -1,4 +1,4 @@
-package com.hcdisat.week_three
+package com.hcdisat.week_three.adapters
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.hcdisat.week_three.models.GenreSummary
+import com.hcdisat.week_three.R
 import com.hcdisat.week_three.models.MusicTrack
 import com.squareup.picasso.Picasso
 
@@ -15,12 +15,12 @@ import com.squareup.picasso.Picasso
  * Adapter to hold all tracks in the recycler view
  */
 class MusicTracksAdapter(
-    private var tracks : GenreSummary? = null,
+    private var tracks :  List<MusicTrack>? = null,
     private val onTrackClicked: (track: MusicTrack) -> Unit
 ) : RecyclerView.Adapter<TrackViewHolder>() {
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setTracks(newTracks: GenreSummary) {
+    fun setTracks(newTracks: List<MusicTrack>) {
         tracks = newTracks
         notifyDataSetChanged()
     }
@@ -34,7 +34,7 @@ class MusicTracksAdapter(
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        tracks?.musicTracks?.let {
+        tracks?.let {
             holder.bind(it[position])
         }
     }
@@ -42,7 +42,7 @@ class MusicTracksAdapter(
     /**
      * returns how many items are in the adapter
      */
-    override fun getItemCount() = tracks?.resultCount ?: 0
+    override fun getItemCount() = tracks?.size ?: 0
 }
 
 /**

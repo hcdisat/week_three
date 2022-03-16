@@ -1,14 +1,12 @@
 package com.hcdisat.week_three.presenters
 
 import android.content.Context
-import android.net.Uri
-import android.util.Log
+import com.hcdisat.week_three.data.database.AppRepository
 import com.hcdisat.week_three.data.network.GenreTracksService
 import com.hcdisat.week_three.models.GenreSummary
 import com.hcdisat.week_three.models.MusicTrack
-import com.hcdisat.week_three.monitors.MediaPlayerMonitor
+import com.hcdisat.week_three.monitors.NetworkMonitor
 import com.hcdisat.week_three.utils.Genre
-import com.hcdisat.week_three.utils.LOG_TAG
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
@@ -17,10 +15,40 @@ import io.reactivex.schedulers.Schedulers
 class MusicTracksPresenter(
     private var context: Context? = null,
     private var viewContract: MusicTrackViewContract? = null,
+    private var networkMonitor: NetworkMonitor? = NetworkMonitor(context),
+    private var dbRepository: AppRepository? = AppRepository(context)
 ): MusicTrackPresenterContract {
 
     private val compositeDisposable by lazy {
         CompositeDisposable()
+    }
+
+    private var isConnected = true
+
+    /**
+     * calls API endpoint based on passed genre
+     */
+    private fun callApi(genre: Genre) =
+        getResourceObserver(genre)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(
+            { saveTracks(it, genre) },
+            { viewContract?.error(it)}
+        ).also { compositeDisposable.add(it) }
+
+    /**
+     * gets tracks from database by genre
+     */
+    private fun readFromDatabase(genre: Genre) =
+        dbRepository?.let { repo ->
+            repo.allTracks(genre)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { viewContract?.success(it) },
+                    { viewContract?.error(it) }
+                ).also { compositeDisposable.add(it) }
     }
 
     /**
@@ -35,35 +63,57 @@ class MusicTracksPresenter(
     }
 
     /**
-     * loads tracks from repository source
+     * insert tracks in database
      */
-    override fun getTracks(endpoint: Genre) {
-        viewContract?.let {
-            it.isLoading(true)
-            getResourceObserver(endpoint)
+    private fun saveTracks(tracks: GenreSummary, genre: Genre) {
+        dbRepository?.let { repo ->
+            repo.deleteAll(genre)
+                .andThen(repo.insert(tracks.musicTracks, genre))
+                .andThen(repo.allTracks(genre))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    { response ->
-                        it.success(response).isLoading(false)
-                    },
-                    { error ->
-                        it.error(error).isLoading(false)
-                    }
-                ).apply { compositeDisposable.add(this) }
+                .subscribe({ viewContract?.success(it) }, { viewContract?.error(it) })
+                .also { compositeDisposable.add(it) }
         }
     }
 
+    /**
+     * keeps an eye on the network
+     * used to react when connection is lost
+     */
+    override fun runNetworkMonitor() {
+        networkMonitor?.apply {
+            registerForNetworkUpdates().subscribe(
+                { isConnected = it },
+                { isConnected = false }
+            ).let {  compositeDisposable.add(it) }
+        }
+    }
+
+    /**
+     * loads tracks from repository source
+     */
+    override fun loadTracks(genre: Genre) {
+        viewContract?.isLoading(true)
+
+        if (isConnected) {
+            callApi(genre)
+            return
+        }
+
+        readFromDatabase(genre)
+    }
+
+    /**
+     * destroy presenter and free resources
+     */
     override fun destroy() {
         context = null
         viewContract = null
         compositeDisposable.dispose()
+        dbRepository?.destroy()
+        dbRepository = null
     }
-
-//    override fun playTrack(musicTrack: MusicTrack) {
-//        val uri = Uri.parse(musicTrack.previewUrl)
-//        mediaPlayerMonitor?.play(uri)
-//    }
 }
 
 /**
@@ -80,7 +130,7 @@ interface MusicTrackViewContract {
     /**
      * gets all tracks from repository
      */
-    fun success(tracks: GenreSummary): MusicTrackViewContract
+    fun success(tracks: List<MusicTrack>): MusicTrackViewContract
 
     /**
      * get any error produced in the observable
@@ -97,10 +147,16 @@ interface MusicTrackPresenterContract {
      * gets tracks from network or db
      * this method works in the background
      */
-    fun getTracks(endpoint: Genre)
+    fun loadTracks(endpoint: Genre)
 
     /**
      * dispose of presenter resources
      */
     fun destroy()
+
+    /**
+     * keeps an eye on the network
+     * used to react when connection is lost
+     */
+    fun runNetworkMonitor()
 }

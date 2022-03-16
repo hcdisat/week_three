@@ -38,10 +38,7 @@ class MediaPlayerMonitor(
             val action = Action { prepareMediaPlayer() }
             Completable.fromAction(action)
                 .subscribe(
-                    {
-                        mediaPlayer?.start()
-                        Log.d(LOG_TAG, "play: Playing")
-                    },
+                    { mediaPlayer?.start() },
                     {
                         Log.e(LOG_TAG, "play: Error trying to play audio")
                     }

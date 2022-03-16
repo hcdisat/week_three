@@ -2,6 +2,7 @@ package com.hcdisat.week_three.data.database
 
 import androidx.room.*
 import com.hcdisat.week_three.models.MusicTrack
+import com.hcdisat.week_three.utils.Genre
 import io.reactivex.Completable
 import io.reactivex.Single
 
@@ -18,10 +19,10 @@ interface MusicTracksDAO {
     fun getAll(): Single<List<MusicTrack>>
 
     /**
-     * selects a [MusicTrack] object with matching trackId
+     * selects all [MusicTrack] objects with matching genre
      */
-    @Query("SELECT * FROM music_tracks WHERE track_id = :trackId")
-    fun getByTrackId(trackId: Int): Single<MusicTrack?>
+    @Query("SELECT * FROM music_tracks WHERE genre = :genre")
+    fun getByGenre(genre: Genre): Single<List<MusicTrack>>
 
     /**
      * inserts a list of tracks into music_tracks table
@@ -34,6 +35,6 @@ interface MusicTracksDAO {
     /**
      * deletes all tracks from table
      */
-    @Query("DELETE FROM music_tracks")
-    fun deleteAll(): Completable
+    @Query("DELETE FROM music_tracks WHERE genre = :genre")
+    fun deleteAll(genre: Genre): Completable
 }

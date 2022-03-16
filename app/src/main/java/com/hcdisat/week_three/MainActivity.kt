@@ -22,12 +22,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
 
-//    private val compositeDisposable = CompositeDisposable()
-//
-//    private val networkMonitor by lazy {
-//        NetworkMonitor(applicationContext)
-//    }
-
     private val navController by lazy {
         findNavController(R.id.nav_host_fragment_content_main)
     }
@@ -73,50 +67,6 @@ class MainActivity : AppCompatActivity() {
             if (tabPosition in 0..3 )
                 navigateToTab(tabPosition)
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-//        val track = MusicTrack(
-//            trackId = 2,
-//            artistName = "Korn",
-//            collectionName = "Issues",
-//            artworkUrl = "http://",
-//            trackNumber = 3
-//        )
-//
-//        val db = MusicTrackDatabase.getInstance(applicationContext)
-//
-//        db.musicTracksDAO().insertMany(listOf(track))
-//            .subscribeOn(Schedulers.io())
-//            .subscribe({
-//                Log.d("TAG", "onStart: Now test reading")
-//            }, {
-//                Log.e("TAG", "onStart: ${it.stackTrace}", )
-//            }).let {
-//                compositeDisposable.add(it)
-//            }
-
-//        val db = MusicTrackDatabase.getInstance(applicationContext)
-//        db.musicTracksDAO().getAll()
-//            .subscribeOn(Schedulers.io())
-//            .subscribe({
-//                Log.d("TAG", it.toString())
-//            }, {}).apply {
-//                compositeDisposable.add(this)
-//            }
-
-//        networkMonitor.registerForNetworkUpdates().subscribe(
-//            {
-//                when(it) {
-//                    true -> Log.d("TAG", "Connected: ")
-//                    false -> Log.d("TAG", "Disconnected: ")
-//                }
-//            },
-//            {})?.let {
-//            compositeDisposable.add(it)
-//        }
-
     }
 
     override fun onSupportNavigateUp(): Boolean {
