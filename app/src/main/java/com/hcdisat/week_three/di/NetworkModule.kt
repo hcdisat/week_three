@@ -14,9 +14,11 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
+/** OkHttpClient requests timeout */
+private const val TIMEOUT = 30L
+
 @Module
 class NetworkModule  {
-    private val TIMEOUT = 30L
 
     @Provides
     fun providesGson(): Gson = Gson()
@@ -33,14 +35,17 @@ class NetworkModule  {
             level = HttpLoggingInterceptor.Level.BODY
         }
 
-
     /**
      * [OkHttpClient] Http client used to intercept request & responses
      * and to make API calls using HTTP
      */
     @Provides
-    fun providesProvidesOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
+    fun providesProvidesOkHttpClient(
+        loggingInterceptor: HttpLoggingInterceptor,
+        requestInterceptor: RequestInterceptor
+    ): OkHttpClient =
         OkHttpClient.Builder()
+            .addInterceptor(requestInterceptor)
             .addInterceptor(loggingInterceptor)
             .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
             .readTimeout(TIMEOUT, TimeUnit.SECONDS)

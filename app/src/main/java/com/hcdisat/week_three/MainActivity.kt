@@ -1,18 +1,12 @@
 package com.hcdisat.week_three
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
-import androidx.navigation.NavController
 import com.google.android.material.tabs.TabLayout
 import com.hcdisat.week_three.databinding.ActivityMainBinding
-import com.hcdisat.week_three.utils.LOG_TAG
 import com.hcdisat.week_three.utils.Tabs
 
 private const val SELECTED_TAB = "SELECTED_TAB"

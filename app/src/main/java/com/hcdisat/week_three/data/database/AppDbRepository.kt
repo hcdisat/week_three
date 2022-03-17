@@ -6,36 +6,6 @@ import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 
-interface AppDbRepositoryContract {
-    /**
-     * get all the tracks from the database
-     */
-    fun allTracks(genre: Genre): Single<List<MusicTrack>>
-
-    /**
-     * By default Room runs suspend queries off the main thread, therefore, we don't need to
-     * implement anything else to ensure we're not doing long running database work
-     * off the main thread.
-     * @return Completable (RXJava Completable)
-    */
-    fun insert(track: MusicTrack, genre: Genre): Completable
-
-    /**
-     * Inserts many tracks
-     */
-    fun insert(tracks: List<MusicTrack>, genre: Genre): Completable
-
-    /**
-     * deletes all records in the table
-     */
-    fun deleteAll(genre: Genre): Completable
-
-    /**
-     * sets a genre to the passed list
-     */
-    fun setGenre(tracks: List<MusicTrack>, genre: Genre)
-}
-
 class AppDbRepository @Inject constructor(
     private var database: MusicTrackDatabase
 ) : AppDbRepositoryContract {
@@ -77,4 +47,34 @@ class AppDbRepository @Inject constructor(
             it.genre = genre
         }
     }
+}
+
+interface AppDbRepositoryContract {
+    /**
+     * get all the tracks from the database
+     */
+    fun allTracks(genre: Genre): Single<List<MusicTrack>>
+
+    /**
+     * By default Room runs suspend queries off the main thread, therefore, we don't need to
+     * implement anything else to ensure we're not doing long running database work
+     * off the main thread.
+     * @return Completable (RXJava Completable)
+     */
+    fun insert(track: MusicTrack, genre: Genre): Completable
+
+    /**
+     * Inserts many tracks
+     */
+    fun insert(tracks: List<MusicTrack>, genre: Genre): Completable
+
+    /**
+     * deletes all records in the table
+     */
+    fun deleteAll(genre: Genre): Completable
+
+    /**
+     * sets a genre to the passed list
+     */
+    fun setGenre(tracks: List<MusicTrack>, genre: Genre)
 }

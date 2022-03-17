@@ -1,7 +1,12 @@
 package com.hcdisat.week_three.views
 
+import android.app.AlertDialog
+import android.content.DialogInterface
+import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,7 +16,6 @@ import com.hcdisat.week_three.R
 import com.hcdisat.week_three.adapters.MusicTracksAdapter
 import com.hcdisat.week_three.models.MusicTrack
 import com.hcdisat.week_three.presenters.MusicTrackViewContract
-import com.hcdisat.week_three.utils.Genre
 
 abstract class BaseFragment: Fragment(), MusicTrackViewContract {
 
@@ -29,14 +33,19 @@ abstract class BaseFragment: Fragment(), MusicTrackViewContract {
     }
 
     /**
+     * Tracks Recycler List
+     */
+    private lateinit var _trackList: RecyclerView
+
+    /**
      * Swipe To refresh widget
      */
     protected lateinit var refreshTracks: SwipeRefreshLayout
 
     /**
-     * used too sets what tab to load based on the music genre
+     * Progress bar
      */
-    protected var genre: Genre = Genre.ROCK
+    protected lateinit var progressBar: ProgressBar
 
     /**
      * setup RecyclerView
@@ -47,21 +56,35 @@ abstract class BaseFragment: Fragment(), MusicTrackViewContract {
                 requireContext(), LinearLayoutManager.VERTICAL, false)
             adapter = tracksAdapter
         }
+        _trackList = trackList
     }
 
     override fun isLoading(loading: Boolean) {
+        if (loading) {
+            progressBar.visibility = View.VISIBLE
+            _trackList.visibility = View.GONE
+            return
+        }
 
+        progressBar.visibility = View.GONE
+        _trackList.visibility = View.VISIBLE
     }
 
     override fun success(tracks: List<MusicTrack>): MusicTrackViewContract {
         tracksAdapter.setTracks(tracks)
         refreshTracks.isRefreshing = false
+        isLoading(false)
         return this
     }
 
     override fun error(throwable: Throwable): MusicTrackViewContract {
         Log.e(RockFragment::class.simpleName, throwable.printStackTrace().toString())
-
+        AlertDialog.Builder(requireContext())
+            .setTitle("Error!!")
+            .setMessage("Something went wrong, please try again later\n${throwable.printStackTrace()}")
+            .setPositiveButton("OK") { _, _ ->
+                //
+            }
         return this
     }
 }

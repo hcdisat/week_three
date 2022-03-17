@@ -5,8 +5,6 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.hcdisat.week_three.models.MusicTrack
-import javax.inject.Scope
-import javax.inject.Singleton
 
 const val DB_VERSION = 1
 const val DB_NAME = "music_tracks_database"

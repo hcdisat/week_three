@@ -3,17 +3,14 @@ package com.hcdisat.week_three.presenters
 import com.hcdisat.week_three.data.database.AppDbRepository
 import com.hcdisat.week_three.data.network.MusicApiRepositoryContract
 import com.hcdisat.week_three.models.GenreSummary
-import com.hcdisat.week_three.monitors.NetworkMonitor
 import com.hcdisat.week_three.utils.Genre
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import javax.inject.Inject
 
 abstract class BasePresenter(
     private val musicApiRepository: MusicApiRepositoryContract,
-    private var networkMonitor: NetworkMonitor,
     private var dbRepository: AppDbRepository
 ): MusicTrackPresenterContract {
 
@@ -72,9 +69,8 @@ abstract class BasePresenter(
      */
     private fun saveTracks(tracks: GenreSummary, genre: Genre) {
         dbRepository.let { repo ->
-            repo.deleteAll(genre)
-                .andThen(repo.insert(tracks.musicTracks, genre))
-                .andThen(repo.allTracks(genre))
+            repo.insert(tracks.musicTracks, genre) // query tracks from the API
+                .andThen(repo.allTracks(genre)) // get items from DB
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ viewContract.success(it) }, { viewContract.error(it) })

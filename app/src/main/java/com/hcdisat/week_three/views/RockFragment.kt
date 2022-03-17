@@ -45,12 +45,15 @@ class RockFragment : BaseFragment() {
         // start to monitor the network
         mPresenter.runNetworkMonitor()
 
+        // sets progress bar
+        progressBar = binding.loading
+
         // sets refresh tabs
         refreshTracks = binding.refreshTracks
 
         // swipeRefresh implementation
         refreshTracks.setOnRefreshListener {
-            mPresenter.loadTracks(genre)
+            mPresenter.loadTracks(Genre.ROCK)
         }
 
         //init the recycler view

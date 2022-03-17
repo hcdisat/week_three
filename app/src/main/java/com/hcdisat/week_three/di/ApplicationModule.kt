@@ -11,8 +11,6 @@ import com.hcdisat.week_three.monitors.MediaPlayerMonitor
 import com.hcdisat.week_three.monitors.NetworkMonitor
 import dagger.Module
 import dagger.Provides
-import javax.inject.Scope
-import javax.inject.Singleton
 
 @Module
 class ApplicationModule(
@@ -33,7 +31,6 @@ class ApplicationModule(
 
     @Provides
     fun providesNetworkMonitor(
-        applicationContext: Context,
         connectionManager: ConnectivityManager,
         networkRequest: NetworkRequest
     ): NetworkMonitor =

@@ -27,6 +27,10 @@ class PlayerPresenter @Inject constructor(
             playPause()
         }
     }
+
+    override fun releasePlayer() {
+        mediaPlayerMonitor.destroy()
+    }
 }
 
 interface PlayerViewContract {
@@ -37,4 +41,5 @@ interface PlayerViewContract {
 interface PlayerPresenterContract {
     fun playTrack(musicTrack: MusicTrack)
     fun playPauseTrack()
+    fun releasePlayer()
 }

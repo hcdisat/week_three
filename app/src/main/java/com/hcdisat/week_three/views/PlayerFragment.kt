@@ -51,6 +51,7 @@ class PlayerFragment : Fragment(), PlayerViewContract {
         bindTrack()
 
         binding.playerCloseBtn.setOnClickListener {
+            presenter.releasePlayer()
             findNavController().popBackStack()
         }
 

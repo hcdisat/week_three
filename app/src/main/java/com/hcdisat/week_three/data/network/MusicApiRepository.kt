@@ -4,7 +4,9 @@ import com.hcdisat.week_three.models.GenreSummary
 import io.reactivex.Single
 import javax.inject.Inject
 
-
+/**
+ * All these methods returns [Single<GenreSummary>] list of observables
+ */
 class MusicApiRepository @Inject constructor(
     private val musicTracksAPI: MusicTracksAPI
 ): MusicApiRepositoryContract {

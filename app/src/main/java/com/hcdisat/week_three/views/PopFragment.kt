@@ -54,16 +54,19 @@ class PopFragment : BaseFragment() {
         // start to monitor the network
         mPresenter.runNetworkMonitor()
 
+        // sets progress bar
+        progressBar = binding.loading
+
         // sets refresh tabs
         refreshTracks = binding.refreshTracks
 
         // swipeRefresh implementation
         refreshTracks.setOnRefreshListener {
-            mPresenter.loadTracks(genre)
+            mPresenter.loadTracks(Genre.POP)
         }
 
         //init the recycler view
-        initList(binding.popTrackList)
+        initList(binding.trackList)
 
         return binding.root
     }

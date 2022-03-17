@@ -7,10 +7,10 @@ import com.hcdisat.week_three.utils.Genre
 import javax.inject.Inject
 
 class PopPresenter @Inject constructor(
-    private val musicApiRepository: MusicApiRepositoryContract,
-    private var networkMonitor: NetworkMonitor,
-    private var dbRepository: AppDbRepository
-) : BasePresenter(musicApiRepository, networkMonitor, dbRepository) {
+    musicApiRepository: MusicApiRepositoryContract,
+    dbRepository: AppDbRepository,
+    private var networkMonitor: NetworkMonitor
+) : BasePresenter(musicApiRepository, dbRepository) {
 
     /**
      * keeps an eye on the network

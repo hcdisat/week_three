@@ -16,21 +16,21 @@ class PresentersModule {
         musicApiRepository: MusicApiRepositoryContract,
         networkMonitor: NetworkMonitor,
         dbRepository: AppDbRepository
-    ): RockPresenter = RockPresenter(musicApiRepository, networkMonitor, dbRepository)
+    ): RockPresenter = RockPresenter(musicApiRepository, dbRepository, networkMonitor)
 
     @Provides
     fun providesPopPresenter(
         musicApiRepository: MusicApiRepositoryContract,
         networkMonitor: NetworkMonitor,
         dbRepository: AppDbRepository
-    ): PopPresenter = PopPresenter(musicApiRepository, networkMonitor, dbRepository)
+    ): PopPresenter = PopPresenter(musicApiRepository, dbRepository, networkMonitor)
 
     @Provides
     fun providesClassicPresenter(
         musicApiRepository: MusicApiRepositoryContract,
         networkMonitor: NetworkMonitor,
         dbRepository: AppDbRepository
-    ): ClassicPresenter = ClassicPresenter(musicApiRepository, networkMonitor, dbRepository)
+    ): ClassicPresenter = ClassicPresenter(musicApiRepository, dbRepository, networkMonitor)
 
     @Provides
     fun providesMusicPlayerPresenter(
