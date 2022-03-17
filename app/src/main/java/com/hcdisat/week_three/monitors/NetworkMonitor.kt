@@ -1,23 +1,18 @@
 package com.hcdisat.week_three.monitors
 
-import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import io.reactivex.subjects.BehaviorSubject
-import kotlinx.coroutines.test.withTestContext
+import javax.inject.Inject
 
 /**
  * Class Used to monitor network connectivity
  */
-class NetworkMonitor(
-    private var context: Context? = null,
-    private val connectionManager: ConnectivityManager =
-        context?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager,
-    private val networkRequest: NetworkRequest =
-        NetworkRequest.Builder()
-            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET).build()
+class NetworkMonitor @Inject constructor(
+    private val connectionManager: ConnectivityManager,
+    private val networkRequest: NetworkRequest
 ): ConnectivityManager.NetworkCallback() {
 
     /**
@@ -48,11 +43,6 @@ class NetworkMonitor(
         networkObserver.onNext(checkConnection())
 
         return networkObserver
-    }
-
-    fun unRegisterForNetworkUpdated() {
-        connectionManager.unregisterNetworkCallback(this)
-        context = null
     }
 
     /**

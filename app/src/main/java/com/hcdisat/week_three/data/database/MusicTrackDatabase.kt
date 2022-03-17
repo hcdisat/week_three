@@ -5,6 +5,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.hcdisat.week_three.models.MusicTrack
+import javax.inject.Scope
+import javax.inject.Singleton
 
 const val DB_VERSION = 1
 const val DB_NAME = "music_tracks_database"
@@ -20,7 +22,8 @@ abstract class MusicTrackDatabase : RoomDatabase() {
          * Singleton prevents multiple instances
          * of database opening at the same time.
          */
-        @Volatile private var INSTANCE : MusicTrackDatabase? = null
+        @Volatile
+        private var INSTANCE : MusicTrackDatabase? = null
 
         /**
          * checks if instance is not null and return it

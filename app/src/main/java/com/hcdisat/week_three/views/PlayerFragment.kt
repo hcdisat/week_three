@@ -8,14 +8,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.navigation.fragment.findNavController
+import com.hcdisat.week_three.MusicTrackApp
 import com.hcdisat.week_three.R
 import com.hcdisat.week_three.databinding.FragmentPlayerBinding
 import com.hcdisat.week_three.models.MusicTrack
 import com.hcdisat.week_three.presenters.PlayerPresenter
-import com.hcdisat.week_three.presenters.PlayerPresenterContract
 import com.hcdisat.week_three.presenters.PlayerViewContract
 import com.hcdisat.week_three.utils.LOG_TAG
 import com.squareup.picasso.Picasso
+import javax.inject.Inject
 
 const val MUSIC_TRACK = "MUSIC_TRACK"
 
@@ -27,11 +28,7 @@ class PlayerFragment : Fragment(), PlayerViewContract {
 
     private var track: MusicTrack? = null
 
-    private var isPlaying = true
-
-    private val presenter by lazy {
-        PlayerPresenter(requireContext(), this) as PlayerPresenterContract
-    }
+    @Inject lateinit var presenter: PlayerPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +41,11 @@ class PlayerFragment : Fragment(), PlayerViewContract {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // activates DI
+        MusicTrackApp.musicTrackComp.inject(this)
+
+        presenter.viewContract = this
+
         // sets the binding
         _binding = FragmentPlayerBinding.inflate(inflater, container, false)
         bindTrack()
@@ -76,7 +78,6 @@ class PlayerFragment : Fragment(), PlayerViewContract {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-        presenter.destroy()
     }
 
     override fun resumed() {

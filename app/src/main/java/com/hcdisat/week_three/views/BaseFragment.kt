@@ -2,39 +2,18 @@ package com.hcdisat.week_three.views
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.hcdisat.week_three.MusicTracksAdapter
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.hcdisat.week_three.R
-import com.hcdisat.week_three.databinding.FragmentRockBinding
+import com.hcdisat.week_three.adapters.MusicTracksAdapter
 import com.hcdisat.week_three.models.MusicTrack
-import com.hcdisat.week_three.presenters.MusicTrackPresenterContract
 import com.hcdisat.week_three.presenters.MusicTrackViewContract
-import com.hcdisat.week_three.presenters.MusicTracksPresenter
 import com.hcdisat.week_three.utils.Genre
 
-open class BaseFragment: Fragment(), MusicTrackViewContract {
-
-    private var _binding: FragmentRockBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
-
-    /**
-     * Presenter for Genres views
-     */
-    private val presenter by lazy {
-        MusicTracksPresenter(
-            requireContext(),
-            this
-        ) as MusicTrackPresenterContract
-    }
+abstract class BaseFragment: Fragment(), MusicTrackViewContract {
 
     /**
      * RecyclerView Adapter
@@ -50,59 +29,24 @@ open class BaseFragment: Fragment(), MusicTrackViewContract {
     }
 
     /**
+     * Swipe To refresh widget
+     */
+    protected lateinit var refreshTracks: SwipeRefreshLayout
+
+    /**
      * used too sets what tab to load based on the music genre
      */
-    protected var endpoint: Genre = Genre.ROCK
+    protected var genre: Genre = Genre.ROCK
 
     /**
      * setup RecyclerView
      */
-    private fun initList(trackList: RecyclerView) {
+    protected fun initList(trackList: RecyclerView) {
         trackList.apply {
             layoutManager = LinearLayoutManager(
                 requireContext(), LinearLayoutManager.VERTICAL, false)
             adapter = tracksAdapter
         }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-
-        // sets the binding
-        _binding = FragmentRockBinding.inflate(inflater, container, false)
-
-        // start to monitor the network
-        presenter.runNetworkMonitor()
-
-        // swipeRefresh implementation
-        binding.refreshTracks.setOnRefreshListener {
-            presenter.loadTracks(endpoint)
-        }
-
-        //init the recycler view
-        initList(binding.trackList)
-
-        return binding.root
-    }
-
-    /**
-     * here all data transactions are done
-     */
-    override fun onResume() {
-        super.onResume()
-
-        presenter.loadTracks(endpoint)
-    }
-
-    /**
-     * destroys fragment
-     */
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-        presenter.destroy()
     }
 
     override fun isLoading(loading: Boolean) {
@@ -111,7 +55,7 @@ open class BaseFragment: Fragment(), MusicTrackViewContract {
 
     override fun success(tracks: List<MusicTrack>): MusicTrackViewContract {
         tracksAdapter.setTracks(tracks)
-        binding.refreshTracks.isRefreshing = false
+        refreshTracks.isRefreshing = false
         return this
     }
 
