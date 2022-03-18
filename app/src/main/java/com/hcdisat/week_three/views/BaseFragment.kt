@@ -16,19 +16,29 @@ import com.hcdisat.week_three.R
 import com.hcdisat.week_three.adapters.MusicTracksAdapter
 import com.hcdisat.week_three.models.MusicTrack
 import com.hcdisat.week_three.presenters.MusicTrackViewContract
+import com.hcdisat.week_three.utils.messageDialog
 
 abstract class BaseFragment: Fragment(), MusicTrackViewContract {
+
+    private var canNavigateTrack = false
 
     /**
      * RecyclerView Adapter
      */
     private val tracksAdapter by lazy {
         MusicTracksAdapter {
-            findNavController()
-                .navigate(
-                    R.id.playerFragment,
-                    Bundle().apply { putParcelable(MUSIC_TRACK, it) }
-                )
+            if (canNavigateTrack) {
+                findNavController()
+                    .navigate(
+                        R.id.playerFragment,
+                        Bundle().apply { putParcelable(MUSIC_TRACK, it) }
+                    )
+            } else {
+                messageDialog(
+                    requireContext(),
+                    "Error: Cannot play track",
+                    "No Internet connection.").show()
+            }
         }
     }
 
@@ -70,7 +80,11 @@ abstract class BaseFragment: Fragment(), MusicTrackViewContract {
         _trackList.visibility = View.VISIBLE
     }
 
-    override fun success(tracks: List<MusicTrack>): MusicTrackViewContract {
+     override fun isConnected(isConnected: Boolean) {
+         canNavigateTrack = isConnected
+     }
+
+     override fun success(tracks: List<MusicTrack>): MusicTrackViewContract {
         tracksAdapter.setTracks(tracks)
         refreshTracks.isRefreshing = false
         isLoading(false)
@@ -79,12 +93,11 @@ abstract class BaseFragment: Fragment(), MusicTrackViewContract {
 
     override fun error(throwable: Throwable): MusicTrackViewContract {
         Log.e(RockFragment::class.simpleName, throwable.printStackTrace().toString())
-        AlertDialog.Builder(requireContext())
-            .setTitle("Error!!")
-            .setMessage("Something went wrong, please try again later\n${throwable.printStackTrace()}")
-            .setPositiveButton("OK") { _, _ ->
-                //
-            }
+        messageDialog(
+            requireContext(),
+            "Error!!",
+            "Something went wrong, please try again later\n${throwable.printStackTrace()}"
+        ).show()
         return this
     }
 }

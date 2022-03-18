@@ -13,6 +13,11 @@ interface MusicTrackViewContract {
     fun isLoading(loading: Boolean)
 
     /**
+     * loading data from repository
+     */
+    fun isConnected(isConnected: Boolean)
+
+    /**
      * gets all tracks from repository
      */
     fun success(tracks: List<MusicTrack>): MusicTrackViewContract

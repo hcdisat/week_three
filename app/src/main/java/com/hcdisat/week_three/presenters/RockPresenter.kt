@@ -19,8 +19,14 @@ class RockPresenter @Inject constructor(
     override fun runNetworkMonitor() {
         networkMonitor.apply {
             registerForNetworkUpdates().subscribe(
-                { isConnected = it },
-                { isConnected = false }
+                {
+                    isConnected = it
+                    viewContract.isConnected(it)
+                },
+                {
+                    isConnected = false
+                    viewContract.isConnected(false)
+                }
             ).let {  compositeDisposable.add(it) }
         }
     }
