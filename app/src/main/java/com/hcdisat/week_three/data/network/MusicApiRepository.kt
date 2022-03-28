@@ -1,6 +1,7 @@
 package com.hcdisat.week_three.data.network
 
 import com.hcdisat.week_three.models.GenreSummary
+import com.hcdisat.week_three.utils.Genre
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -11,11 +12,11 @@ class MusicApiRepository @Inject constructor(
     private val musicTracksAPI: MusicTracksAPI
 ): MusicApiRepositoryContract {
 
-    override fun getPop(): Single<GenreSummary> = musicTracksAPI.getPopTracks()
+    override fun getPop(): Single<GenreSummary> = musicTracksAPI.getTracks(Genre.POP.name.lowercase())
 
-    override fun getRock(): Single<GenreSummary> = musicTracksAPI.getRockTracks()
+    override fun getRock(): Single<GenreSummary> = musicTracksAPI.getTracks(Genre.ROCK.name.lowercase())
 
-    override fun getClassic(): Single<GenreSummary> = musicTracksAPI.getClassicTracks()
+    override fun getClassic(): Single<GenreSummary> = musicTracksAPI.getTracks(Genre.CLASSIC.name.lowercase())
 }
 
 /**
